@@ -1,0 +1,50 @@
+せせせせ
+:namespace1
+:namespace1
+{
+	//hi
+	hi = 10
+
+	//bye
+	bye = 20	
+}
+
+:namespace2
+:namespace2
+{
+	// see 
+	see = 30
+
+	// you
+	you = 40,
+}
+
+:namespace3
+{
+/* good */
+	good = 50
+
+	/*
+	luck
+	*/luck = 60
+}
+
+
+:namespace4
+
+/* namespace4
+commant thx!!
+*/:namespace4
+{
+
+	have = 70
+	fun = 80
+}
+
+
+:namespace5
+{
+	string1 = "have"
+	string2 = "fun"
+}
+

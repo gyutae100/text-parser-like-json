@@ -1,0 +1,82 @@
+
+		//현재 문자 값
+		char now_ch = '\0';
+
+		//현재 문자 값의 주소
+		char *ptr_ch = *inout_ptr_ch;
+
+		//총 문자열 길이
+		int len_total = 0;
+
+		//단어 문자열 길이
+		int len_word = 0;
+
+		//단어 문자열 플래그
+		bool startWord = false;
+
+		
+		//------------------------------------------------------------------------------
+		//	프로바이더 시작 포인터 설정 여부 체크
+		//
+		//	:설정 안된 경우 실패
+		//------------------------------------------------------------------------------
+		if (ptr_ch == NULL)
+		{
+			cout << "프로바이더 셋 하시오!"<<endl;
+			return false;
+		}
+
+		char * ptr_skip = ptr_ch + len_total;
+		int len_skip = 0;
+
+		
+		SkipNoneCommand(&ptr_skip, &len_skip);
+
+
+		//단어 구분 
+		while ((now_ch = *(ptr_ch + len_total)) != '\0')
+		{
+
+			//해당 문자가 구분 문자인지 테스트
+			for (int idx = 0; idx < _cnt_symbol_delimiter; idx++)
+			{
+				
+				//단어 구분 문자인 경우
+				if (now_ch == _symbol_delimiter[idx] && startWord == false)
+				{
+					break;
+				}
+
+				//해당 단어가 시작 문자인 경우
+				else if (idx + 1 == _cnt_symbol_delimiter && startWord == false)
+				{
+					startWord = true;
+				}
+
+				//단어 읽기 중 단어의 끝에 도달한 경우
+				else if (now_ch == _symbol_delimiter[idx] && startWord == true)
+				{
+					//길이 반환
+					*inout_ptr_ch = ptr_ch + (len_total - len_word);
+					*ptr_len = len_word;
+					return true;
+				}
+
+			}
+
+			//워드 개수 증가
+			if (startWord == true)
+				len_word++;
+
+			//토탈 워드 개수 증가
+			len_total++;
+
+		}
+
+
+
+		//실패
+		*ptr_len = -1;
+
+
+		return false;

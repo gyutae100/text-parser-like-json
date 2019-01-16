@@ -1,0 +1,135 @@
+	//주석 처리 
+	bool SkipNoneCommand(char ** out_ptr_ch, int *out_len_commant)
+	{
+		char set_open_commant[3];
+		int idx_open_commant = 0;
+
+		char set_close_commant[3];
+		int idx_close_commant = 0;
+
+		//초기화
+		idx_open_commant = 0;
+		idx_close_commant = 0;
+
+		const char *ptr_ch = *out_ptr_ch;
+		int len = 0;
+		char ch = -1;
+
+		bool startCommant = false;
+
+		int len_commant = 0;
+
+		while ((ch = *(ptr_ch + len)) != '\0')
+		{
+
+			//주석이 아닌 상태에서 문자가 오는 경우
+			if (ch != '/' && ch != '*')
+			{
+				if (false == startCommant)
+				{
+					*out_len_commant = len;
+					return true;
+				}
+			}
+
+			if (ch == '/')
+			{
+				set_open_commant[idx_open_commant++] = ch;
+
+				// '//'인 경우 검사
+				if (idx_open_commant == 2)
+				{
+					startCommant = true;
+
+					//연속성 검사
+					//너무 과한가?
+					// '//'성립
+					if (set_open_commant[idx_open_commant - 2] == '/')
+					{
+						ch = *(ptr_ch + len - 1);
+						
+						if (ch != '/')
+						{
+							idx_open_commant = 0;
+							continue;
+						}
+
+
+						len++;
+						len_commant = 0;
+						while ((ch = *(ptr_ch + len + len_commant)) != '\0')
+						{
+							len_commant++;
+							//다음 라인 갈 수 있는가?
+							//라인 피드 또는 캐리지 리턴
+							if (ch == 0x0a || ch == 0x0d || ch == '\n')
+							{
+								*out_len_commant = len_commant +len;
+								return true;
+							}
+
+
+						}
+					}
+				}
+
+			}
+
+			//별이 오는 경우
+			if (ch == '*')
+			{
+				set_open_commant[idx_open_commant++] = ch;
+				// '/*'인 경우 검사
+				if (idx_open_commant == 2)
+				{
+					// '/*'성립
+					if (set_open_commant[idx_open_commant - 2] == '/')
+					{
+						startCommant = true;
+
+						len++;
+						len_commant = 0;
+						while ( ((ch = *(ptr_ch + len + len_commant)) != '\0') && true == startCommant)
+						{
+							len_commant++;
+							//다음 라인 갈 수 있는가?
+							//라인 피드 또는 캐리지 리턴
+							if (ch == '*')
+							{
+								idx_close_commant = 0;
+								set_close_commant[idx_close_commant++] = ch;
+
+							}
+							else if (ch == '/')
+							{
+								set_close_commant[idx_close_commant++] = ch;
+
+								//이전 문자
+								char ch2 = *(ptr_ch + len_commant );
+								if (ch2 == '*')
+								{
+
+									*out_len_commant = len_commant + len;
+									return true;
+								}
+								else
+								{
+									idx_close_commant = 0;
+								}
+
+
+							}
+
+
+						}
+					}
+				}
+			}
+
+
+			
+			len++;
+		}
+
+
+	}
